@@ -326,12 +326,18 @@ public abstract class AbstractCompileMojo extends AbstractGroovySourcesMojo {
 
     /**
      * Whether to run the compiler using {@code groovyc} in a separate process.
-     * <p>
+     *
      * {@code groovyc} will be search in {@code GROOVY_HOME/bin} first and then on the {@code PATH}.
      * If no executable was found, the compilation fails.
      */
-    @Parameter(property = "groovy.fork", defaultValue = "false")
+    @Parameter(defaultValue = "false")
     protected boolean fork;
+
+    /**
+     * Whether to enable joint compilation when invoking {@code groovyc} in a separate process.
+     */
+    @Parameter(defaultValue = "false")
+    protected boolean forkJointCompilation;
 
     /**
      * Performs compilation of compile mojos.
@@ -413,6 +419,10 @@ public abstract class AbstractCompileMojo extends AbstractGroovySourcesMojo {
 
         if (this.includeClasspath != IncludeClasspath.PROJECT_ONLY) {
             getLog().warn("Option 'includeClasspath' is requested but not supported yet with fork=true.");
+        }
+
+        if (true) {
+            args.add("--jointCompilation");
         }
 
         // missing:

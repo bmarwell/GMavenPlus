@@ -273,6 +273,15 @@ public abstract class AbstractGenerateStubsMojo extends AbstractGroovyStubSource
     protected IncludeClasspath includeClasspath;
 
     /**
+     * Whether to run the compiler using {@code groovyc} in a separate process.
+     *
+     * {@code groovyc} will be search in {@code GROOVY_HOME/bin} first and then on the {@code PATH}.
+     * If no executable was found, the compilation fails.
+     */
+    @Parameter(defaultValue = "false")
+    protected boolean fork;
+
+    /**
      * Performs the stub generation on the specified source files.
      *
      * @param stubSources     the sources to perform stub generation on
@@ -287,6 +296,11 @@ public abstract class AbstractGenerateStubsMojo extends AbstractGroovyStubSource
     protected synchronized void doStubGeneration(final Set<File> stubSources, final List<?> classpath, final File outputDirectory) throws ClassNotFoundException, InvocationTargetException, IllegalAccessException, InstantiationException, MalformedURLException {
         if (stubSources == null || stubSources.isEmpty()) {
             getLog().info("No sources specified for stub generation. Skipping.");
+            return;
+        }
+
+        if (fork) {
+            getLog().warn("Stub generation mojos are not compatible with running in fork mode. Skipping.");
             return;
         }
 
